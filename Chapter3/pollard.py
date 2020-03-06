@@ -1,8 +1,8 @@
-import math
-from math import gcd
 from random import randint
+from math import gcd
 
-def get_primes(n):
+# Sieve of Eratosthenes
+def primes(n):
     b = [True] * (n + 1)
     ps = []
     for p in range(2, n + 1):
@@ -12,6 +12,7 @@ def get_primes(n):
                 b[i] = False
     return ps
 
+# Square-and-multiply algorithm for exponentiation
 def exponentiate_sam(x, d, n):
     d_bin = list(bin(d)[2:])
     t = len(d_bin) - 1
@@ -22,45 +23,18 @@ def exponentiate_sam(x, d, n):
             r = (r * x) % n
     return r
 
-def pollard_pm1(a, B):
-    b = 2
-    primes = get_primes(B ** 2)
-    for i, pi in enumerate(primes):
-        e = math.floor(math.log(B, 10) / math.log(pi, 10))
-        f = pi ** e
-        b = exponentiate_sam(b, f, a)
-    g = gcd(b - 1, a)
-    if (g>1) and (g<a):
-        return g
+# Pollard's p-1
+def pollard_pm1(n, limit):
+    a = randint(2, n)
+    if gcd(a, n) != 1:
+        return gcd(a, n)
     else:
-        print("Method failed!")
-        return None
-    return None
-
-def pollard_pm1_charest(n, B):
-    primes = get_primes(B ** 2)
-    m = 1
-    for i, p in enumerate(primes):
-        exp = math.floor(math.log(B, 10) / math.log(p, 10))
-        m = m * (p ** exp)
-    a = randint(1, n)
-    d = gcd(a, n)
-    e = None
-    while True:
-        if d==1:
-            print("d = 1")
-            w = exponentiate_sam(a, m, n)
-            e = gcd(w - 1, n)
-            if (e!=1) and (e!=n):
-                return e
-            elif e==n:
-                print("e = n; repeating with new random values of 'a'")
-                a = randint(1, n)
-                d = gcd(a, n)
-            else:
-                print("Method failed. Increase B!")
-                e = None
-                break
-        else:
-            return d
-    return e
+        for p in primes(limit):
+            pp = p
+            while pp < limit:
+                a = exponentiate_sam(a, pp, n)
+                g = gcd(a-1, n)
+                if (g>1) and (g<n):
+                    return g
+                pp = p * pp
+    return False

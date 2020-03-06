@@ -6,14 +6,13 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "# import argparse\n",
     "from random import randint\n",
     "from math import gcd"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 4,
+   "execution_count": 2,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -98,23 +97,16 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 5,
+   "execution_count": 3,
    "metadata": {},
    "outputs": [
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "C:\\Users\\Usuario\\Anaconda3\\lib\\site-packages\\ipykernel_launcher.py:64: DeprecationWarning: fractions.gcd() is deprecated. Use math.gcd() instead.\n"
-     ]
-    },
     {
      "data": {
       "text/plain": [
        "4"
       ]
      },
-     "execution_count": 5,
+     "execution_count": 3,
      "metadata": {},
      "output_type": "execute_result"
     }
