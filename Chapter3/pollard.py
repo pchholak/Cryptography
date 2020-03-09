@@ -13,7 +13,7 @@ def primes(n):
     return ps
 
 # Square-and-multiply algorithm for exponentiation
-def exponentiate_sam(x, d, n):
+def modular_pow(x, d, n):
     d_bin = list(bin(d)[2:])
     t = len(d_bin) - 1
     r = x
@@ -22,6 +22,30 @@ def exponentiate_sam(x, d, n):
         if int(d_bin[t-i]) == 1:
             r = (r * x) % n
     return r
+
+# Modular square function for pollard's rho calculations
+def modular_sqr(x, n):
+    f = (x * x) % n
+    return f
+
+# Pollard's rho algorithm for factorization
+def pollard_rho(n):
+    x, c = randint(0, n), randint(1, n-2)
+    y = x
+    g = 1
+    while g == 1:
+        # Tortoise
+        x = modular_sqr(x, n)
+        # Hare
+        y = modular_sqr(y, n)
+        y = modular_sqr(y, n)
+        # Check gcd
+        g = gcd(abs(x-y), n)
+    if g == n:
+        return pollard_rho(n)
+    else:
+        return g
+    return None
 
 # Pollard's p-1
 def pollard_pm1(n, limit):
@@ -32,7 +56,7 @@ def pollard_pm1(n, limit):
         for p in primes(limit):
             pp = p
             while pp < limit:
-                a = exponentiate_sam(a, pp, n)
+                a = modular_pow(a, pp, n)
                 g = gcd(a-1, n)
                 if (g>1) and (g<n):
                     return g
