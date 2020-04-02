@@ -160,8 +160,8 @@ class des():
 
 
         self.generatekeys() #Generate all the keys
-        # print("Subkey-1 bit array:", self.keys[0])
-        # print("Subkey-16 bit array:", self.keys[15])
+        # print("Subkey-1:", bit_array_to_string(self.keys[0]))
+        # print("Subkey-16:", bit_array_to_string(self.keys[15]))
         # print()
         text_blocks = nsplit(self.text, 8) #Split the text in blocks of 8 bytes so 64 bits
         result = list()
@@ -180,15 +180,17 @@ class des():
             # print()
             tmp = None
             for i in range(16): #Do the 16 rounds
-                print("subkey #{} = {}".format(i,
-                    bit_array_to_string(self.keys[i])))
                 # print("R_i-1 = {}".format((bit_array_to_string(d))))
                 d_e = self.expand(d, E) #Expand d to match Ki size (48bits)
                 # print("F expansion:", d_e)
                 if action == ENCRYPT:
                     tmp = self.xor(self.keys[i], d_e)#If encrypt use Ki
+                    # print("subkey #{} = {}".format(i,
+                    #     bit_array_to_string(self.keys[i])))
                 else:
                     tmp = self.xor(self.keys[15-i], d_e)#If decrypt start by the last key
+                    # print("subkey #{} = {}".format(i,
+                    #     bit_array_to_string(self.keys[15-i])))
                 # print("F xor:", tmp)
                 tmp = self.substitute(tmp) #Method that will apply the SBOXes
                 # print("F substitution:", tmp)
@@ -198,8 +200,13 @@ class des():
                 # print("Round xor:", tmp)
                 g = d
                 d = tmp
+            # print("L16 = {}", bit_array_to_string(g))
+            # print("R16 = {}", bit_array_to_string(d))
+            # print("d+g:", d+g)
+            # print("After final permutation:",
+            #     bit_array_to_string(self.permut(d+g, PI_1)))
             result += self.permut(d+g, PI_1) #Do the last permut and append the result to result
-            # print("After final permutation:", result)
+            # print("Result bit array", result)
         final_res = bit_array_to_string(result)
         if padding and action==DECRYPT:
             return self.removePadding(final_res) #Remove the padding if decrypt and padding is true
@@ -237,16 +244,17 @@ class des():
         # print("Commencing key schedule----------------------------------------")
         self.keys = []
         key = string_to_bit_array(self.password)
-        # print("Key bit array:", key)
+        # print("Key string:", bit_array_to_string(key))
         # print()
         key = self.permut(key, CP_1) #Apply the initial permut on the key
-        # print("Permuted PC-1 key bit array:", key)
-        # print("Length of PC-1 key:", len(key))
+        # print("Permuted PC-1 key:", bit_array_to_string(key))
         # print()
         g, d = nsplit(key, 28) #Split it in to (g->LEFT),(d->RIGHT)
         # print("Key halves")
-        # print("C0_bits =", g)
-        # print("D0_bits =", d)
+        # print("C0 =", bit_array_to_string(g))
+        # print("C0 bits =", g)
+        # print("D0 =", bit_array_to_string(d))
+        # print("D0 bits =", d)
         # print()
         for i in range(16):#Apply the 16 rounds
             g, d = self.shift(g, d, SHIFT[i]) #Apply the shift associated with the round (not always 1)
