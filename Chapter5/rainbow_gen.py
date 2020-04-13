@@ -92,7 +92,6 @@ input: Name of the file to read from.
             line = f.readline()
         f.close()
 
-
     def _find(self, hashV):
         """Find the passwords in the table corresponding to the given hash.
 hashV: Hash to find.
