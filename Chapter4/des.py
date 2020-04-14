@@ -144,7 +144,7 @@ class DES(object):
     _sub_keys = {}
 
     @classmethod
-    def encrypt(cls, string, key):
+    def encrypt(cls, string, key, padding=True):
         mode = "encrypt"
         if len(key) < 8:
             raise "Key should be at least 8 bytes long."
@@ -152,7 +152,8 @@ class DES(object):
             key = key[:8] # For keys longer than 8 bytes, use the first 8 bytes
         cls._string = string
         cls._key = key
-        cls._add_padding() # Add padding
+        if padding:
+            cls._add_padding() # Add padding
         padded_bit_array = cls._string2bits()
         cls._key_schedule(key) # Store scheduled keys
         N = len(padded_bit_array) // 64
@@ -171,7 +172,7 @@ class DES(object):
         return bitarray2str(cipher)
 
     @classmethod
-    def decrypt(cls, string, key):
+    def decrypt(cls, string, key, padding=True):
         mode = "decrypt"
         if len(key) < 8:
             raise "Key should be at least 8 bytes long."
@@ -194,7 +195,11 @@ class DES(object):
             Z = ('0' * (64 - nZ)) + Z
             for c in Z:
                 plain_text.append(int(c))
-        return cls._remove_padding(bitarray2str(plain_text))
+        if padding:
+            res = cls._remove_padding(bitarray2str(plain_text))
+        else:
+            res = bitarray2str(plain_text)
+        return res
 
     # Add PKCS5 padding
     @classmethod

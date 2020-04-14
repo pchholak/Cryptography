@@ -1,3 +1,5 @@
+# Taken from: https://github.com/jfmengels/rainbowtable-python/
+
 class rbnode(object):
     """
     A node in a red black tree.
